@@ -1,2 +1,5 @@
-# redux-
-Created with CodeSandbox
+# redux-2023-04-06
+1. Created with CodeSandbox
+
+
+2. redux 相关技术栈

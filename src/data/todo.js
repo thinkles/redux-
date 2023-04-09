@@ -1,4 +1,4 @@
-const Mock = require("mock");
+const Mock = require("mockjs");
 
 module.exports = () => {
 

@@ -1,4 +1,4 @@
-import { Card, Row, Col } from "antd";
+import { Card } from "antd";
 import { ReactNode } from "react";
 import "./style.css";
 interface DisplayProps {
@@ -8,7 +8,7 @@ interface DisplayProps {
   demoTitle: string;
 }
 
-const Display = (props: DisplayProps) => {
+const Display =    (props: DisplayProps) => {
   const { children, describe, demoTitle } = props;
 
   return (

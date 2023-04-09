@@ -5,6 +5,10 @@
     "compilerOptions": {
         "strict": true,
         "esModuleInterop": true,
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        // "skipDefaultLibCheck": true,
         "lib": [
             "dom",
             "es2015"

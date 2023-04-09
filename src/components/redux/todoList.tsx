@@ -33,7 +33,7 @@ const Item = ({ text, status }: { text: string; status: STATUS }) => {
   );
 };
 
-export default () => {
+ const  ComComponent =() => {
   const dataSource = useSelector((state: RootState) => state.todo);
 
   return (
@@ -44,3 +44,5 @@ export default () => {
     </>
   );
 };
+
+export default ComComponent;

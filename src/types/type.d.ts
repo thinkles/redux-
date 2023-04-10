@@ -3,7 +3,7 @@ import {AxiosRequestConfig, AxiosRequestHeaders} from "axios";
 
 declare global {
     interface CustomAxiosRequestConfig<D = any> extends AxiosRequestConfig<D> {
-     showLoading:boolean
+     showLoading?:boolean
     }
 
   }

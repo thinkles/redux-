@@ -1,12 +1,13 @@
 {
     "include": [
-        "./src/**/*"
+        "./src/**/*",
     ],
     "compilerOptions": {
         "strict": true,
         "esModuleInterop": true,
         "typeRoots": [
-            "node_modules/@types"
+            "node_modules/@types",
+            "src/types"
         ],
         // "skipDefaultLibCheck": true,
         "lib": [

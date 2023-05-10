@@ -18,6 +18,9 @@ function downloadFile(
 }
 
 const controller = new AbortController();
+// 第二种的取消方法
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
 
 /**
  * * 1. 封装了axios,提供一个全局loading控制（showLoading标识控制）
@@ -32,6 +35,7 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
     withCredentials: true,
     showLoading: true,
     signal: controller.signal,
+    cancelToken: source.token,
     ...config,
   });
   // 添加请求拦截器
@@ -42,6 +46,7 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
       const path = JSON.stringify(config.url + config.data + config.data);
       if (urlSet.has(path)) {
         controller.abort();
+        // source.cancel("Operation canceled by the user.");
       } else {
         urlSet.add(path);
       }
@@ -94,4 +99,5 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
   return instance;
 };
 
-export default httpInstance;
+const request = httpInstance();
+export default request;

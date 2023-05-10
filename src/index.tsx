@@ -8,6 +8,9 @@ import { composeWithDevTools } from "@redux-devtools/extension";
 import mySaga from "./sagas/index";
 import App from "./App";
 
+/**
+ * * 接入 saga、redux、react-redux 、 redux-devtools
+ */
 const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(

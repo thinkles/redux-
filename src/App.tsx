@@ -1,7 +1,12 @@
 import "./styles.css";
 
-import BasicLayout from "./containers/Layout/BasicLayout";
+import BasicLayout from "./Layout/BasicLayout";
+import { BrowserRouter as Router } from "react-router-dom";
 
 export default function App() {
-  return <BasicLayout />;
+  return (
+    <Router>
+      <BasicLayout />;
+    </Router>
+  );
 }

@@ -3,39 +3,40 @@ import { Layout, Menu, Input, Avatar, Dropdown, MenuProps } from "antd";
 import {
   UploadOutlined,
   UserOutlined,
-  VideoCameraOutlined
+  VideoCameraOutlined,
 } from "@ant-design/icons";
 
 import "./style.css";
-
-import TodoList from "../../components/redux/todoList";
-import Display from "../../components/display/index";
-import HeaderGroup from "./components/header";
+import TodoList from "../components/redux/todoList";
+import HeaderGroup from "./header";
+import { Link, Route, Switch } from "react-router-dom";
+import Container from "../components/Container";
+import AxiosTest from "../components/Axios";
 
 const { Header, Footer, Sider, Content } = Layout;
 
 const footerStyle: React.CSSProperties = {
   textAlign: "center",
   color: "#fff",
-  backgroundColor: "#7dbcea"
+  backgroundColor: "#7dbcea",
 };
 
 const menuItem = [
   {
     key: "1",
     icon: <UserOutlined />,
-    label: "nav 1"
+    label: <Link to="/test">Axios</Link>,
   },
   {
     key: "2",
     icon: <VideoCameraOutlined />,
-    label: "nav 2"
+    label: <Link to="/redux">Redux</Link>,
   },
   {
     key: "3",
     icon: <UploadOutlined />,
-    label: "nav 3"
-  }
+    label: <Link to="/saga">Saga</Link>,
+  },
 ];
 
 const BasicLayout: React.FC = () => {
@@ -55,15 +56,23 @@ const BasicLayout: React.FC = () => {
           <HeaderGroup />
         </Header>
         <Content className="content">
-          <h1 className="title"># Redux</h1>
-          <div className="container">
-            <Display describe="redux 最基本使用" demoTitle="123123123123">
-              <TodoList />
-            </Display>
-            <Display describe="redux 最基本使用" demoTitle="123123123123">
-              <TodoList />
-            </Display>
-          </div>
+          <Switch>
+            <Route exact path="/test">
+              <Container title="axios 测试">
+                <AxiosTest />
+              </Container>
+            </Route>
+            <Route path="/redux">
+              <Container title="axios 测试">
+                <TodoList />
+              </Container>
+            </Route>
+            <Route path="/saga">
+              <Container title="axios 测试">
+                <TodoList />
+              </Container>
+            </Route>
+          </Switch>
         </Content>
         <Footer style={footerStyle}>Footer</Footer>
       </Layout>

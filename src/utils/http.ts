@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {AxiosRequestConfig, InternalAxiosRequestConfig} from "axios";
 import { hideLoading, showLoading } from "./loading";
 import { AxiosResponse } from "axios";
 import { message } from "antd";
@@ -17,46 +17,79 @@ function downloadFile(
   throw new Error("Function not implemented.");
 }
 
-const controller = new AbortController();
 // 第二种的取消方法
-const CancelToken = axios.CancelToken;
-const source = CancelToken.source();
+// const CancelToken = axios.CancelToken;
+// const source = CancelToken.source();
+
+const urlMap = new Map();
+
+/**
+ * 
+ * @param config 
+ * @returns  生成一个key表示重复的请求
+ */
+
+const getRequestKey = (config:AxiosRequestConfig) => {
+  const { method, url, params, data } = config;
+
+  return [method, url, JSON.stringify(params), JSON.stringify(data)].join(
+    "&"
+  );
+};
+
+
+/**
+ * 取消重复请求
+ */
+const cancelRequest =(config:InternalAxiosRequestConfig) => {
+  const requestKey = getRequestKey(config);
+  if (urlMap.has(requestKey)) {
+    const abort = urlMap.get(getRequestKey);
+    console.log("121212",abort)
+    abort();
+    
+  }else{
+    const controller = new AbortController();
+    config.signal = controller.signal;
+    console.log("first",controller)
+    urlMap.set(requestKey,controller.abort)
+
+  }
+
+  return config;
+
+}
 
 /**
  * * 1. 封装了axios,提供一个全局loading控制（showLoading标识控制）
  * * 2. 通过 ts declare覆盖axios的类型声明
  */
-
 export const httpInstance = (config?: CustomAxiosRequestConfig) => {
-  const urlSet = new Set();
   const instance = axios.create({
     baseURL: apiUrl,
-    timeout: 1000,
+    timeout: 5000,
     withCredentials: true,
     showLoading: true,
-    signal: controller.signal,
-    cancelToken: source.token,
+     // cancelToken: source.token,
     ...config,
   });
   // 添加请求拦截器
   instance.interceptors.request.use(
     function (config) {
       // 在发送请求之前做些什么
-      console.log("config:", config);
-      const path = JSON.stringify(config.url + config.data + config.data);
-      if (urlSet.has(path)) {
-        controller.abort();
-        // source.cancel("Operation canceled by the user.");
-      } else {
-        urlSet.add(path);
-      }
+      console.log("请求config:", config);
+      config = cancelRequest(config);
+    
       if (config.showLoading !== false) showLoading();
       return config;
     },
     function (error) {
       const { config } = error;
-      const path = JSON.stringify(config.url + config.data + config.data);
-      urlSet.delete(path);
+      console.log("请求错误处理config",config)
+
+      const requestKey = getRequestKey(config);
+      urlMap.delete(requestKey)
+
       // 对请求错误做些什么
       return Promise.reject(error);
     }
@@ -64,28 +97,37 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
 
   instance.interceptors.response.use(
     function (response) {
-      console.log("response:", response);
+      console.log("响应response:", response);
       if (response.config.showLoading !== false) hideLoading();
-      const { code, data, message } = response.data;
+      const { data, status,config } = response;
       // config设置responseType为blob 处理文件下载
+      console.log("响应config:",config);
+
+      const requestKey = getRequestKey(config);
+      urlMap.delete(requestKey)
+
       if (response.data instanceof Blob) {
         return downloadFile(response);
       } else {
-        if (code === 200) return data;
-        else if (code === 401) {
+        if (status === 200){
+          return data
+        }else if (status === 401) {
           jumpLogin();
         } else {
-          message.error(message);
+          message.error("请求失败");
           return Promise.reject(response.data);
         }
       }
     },
     function (error) {
-      // 对响应错误做点什么
-      // axios 的 validateStatus 配置项可以决定那个状态码来触发这个函数， 默认大等于200 小于300
-      console.log("error-response:", error.response);
+      // 响应错误的情况都会走，响应拦截器，例如错误1，状态码大于200，错误2，没有返回响应结果
+      console.log("error:", error);
       console.log("error-config:", error.config);
       console.log("error-request:", error.request);
+
+      const requestKey = getRequestKey(error.config);
+      urlMap.delete(requestKey)
+
       if (error.config.showLoading !== false) hideLoading();
       if (error.response) {
         if (error.response.status === 401) {
@@ -98,6 +140,5 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
   );
   return instance;
 };
-
-const request = httpInstance();
-export default request;
+ 
+export const request =  httpInstance();

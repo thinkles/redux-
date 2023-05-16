@@ -70,6 +70,7 @@ const cancelRequestAnother = (config: InternalAxiosRequestConfig) => {
   return config;
 };
 
+
 /**
  * * 1. 封装了axios,提供一个全局loading控制（showLoading标识控制）
  * * 2. 通过 ts declare覆盖axios的类型声明
@@ -158,3 +159,21 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
 };
 
 export const request = httpInstance();
+
+
+
+
+/**
+ * axios 还有些隐藏的 API,处理并行请求
+ * 
+ */
+
+/* 
+
+const urls = ['url1', 'url2', 'url3'];
+axios.all(urls.map(url => axios.get(url)))
+  .then(axios.spread((...results) => {
+    console.log(results);
+  })); 
+
+*/

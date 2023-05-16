@@ -1,4 +1,4 @@
-import axios, {AxiosRequestConfig, InternalAxiosRequestConfig} from "axios";
+import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 import { hideLoading, showLoading } from "./loading";
 import { AxiosResponse } from "axios";
 import { message } from "antd";
@@ -17,48 +17,58 @@ function downloadFile(
   throw new Error("Function not implemented.");
 }
 
-// 第二种的取消方法
-// const CancelToken = axios.CancelToken;
-// const source = CancelToken.source();
-
+const CancelToken = axios.CancelToken;
 const urlMap = new Map();
 
 /**
- * 
- * @param config 
+ *
+ * @param 请求config配置信息
  * @returns  生成一个key表示重复的请求
  */
 
-const getRequestKey = (config:AxiosRequestConfig) => {
-  const { method, url, params, data } = config;
-
-  return [method, url, JSON.stringify(params), JSON.stringify(data)].join(
-    "&"
-  );
+const getRequestKey = (config: AxiosRequestConfig) => {
+  if(config!==undefined){
+    const { method, url, params, data } = config;
+    return [method, url, JSON.stringify(params), JSON.stringify(data)].join("&");
+  }
+  return ""
+  
 };
 
-
 /**
- * 取消重复请求
+ * * AbortController() 方法取消请求
+ *
  */
-const cancelRequest =(config:InternalAxiosRequestConfig) => {
+const cancelRequest = (config: InternalAxiosRequestConfig) => {
   const requestKey = getRequestKey(config);
   if (urlMap.has(requestKey)) {
-    const abort = urlMap.get(getRequestKey);
-    console.log("121212",abort)
-    abort();
-    
-  }else{
+    const controller = urlMap.get(requestKey);
+    controller.abort();
+  } else {
     const controller = new AbortController();
     config.signal = controller.signal;
-    console.log("first",controller)
-    urlMap.set(requestKey,controller.abort)
-
+    urlMap.set(requestKey, controller);
   }
 
   return config;
+};
 
-}
+/**
+ * * 使用第二种方法实现取消重复请求
+ */
+
+const cancelRequestAnother = (config: InternalAxiosRequestConfig) => {
+  const requestKey = getRequestKey(config);
+  if (urlMap.has(requestKey)) {
+    const source = urlMap.get(requestKey);
+    source.cancel("取消请求。。");
+  } else {
+    const source = CancelToken.source();
+    config.cancelToken = source.token;
+    urlMap.set(requestKey, source);
+  }
+  return config;
+};
 
 /**
  * * 1. 封装了axios,提供一个全局loading控制（showLoading标识控制）
@@ -70,7 +80,7 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
     timeout: 5000,
     withCredentials: true,
     showLoading: true,
-     // cancelToken: source.token,
+    // cancelToken: source.token,
     ...config,
   });
   // 添加请求拦截器
@@ -78,17 +88,18 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
     function (config) {
       // 在发送请求之前做些什么
       console.log("请求config:", config);
-      config = cancelRequest(config);
-    
+      // config = cancelRequest(config);
+      config = cancelRequestAnother(config);
+
       if (config.showLoading !== false) showLoading();
       return config;
     },
     function (error) {
       const { config } = error;
-      console.log("请求错误处理config",config)
+      console.log("请求错误处理config", config);
 
       const requestKey = getRequestKey(config);
-      urlMap.delete(requestKey)
+      urlMap.delete(requestKey);
 
       // 对请求错误做些什么
       return Promise.reject(error);
@@ -99,19 +110,19 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
     function (response) {
       console.log("响应response:", response);
       if (response.config.showLoading !== false) hideLoading();
-      const { data, status,config } = response;
+      const { data, status, config } = response;
       // config设置responseType为blob 处理文件下载
-      console.log("响应config:",config);
+      console.log("响应config:", config);
 
       const requestKey = getRequestKey(config);
-      urlMap.delete(requestKey)
+      urlMap.delete(requestKey);
 
       if (response.data instanceof Blob) {
         return downloadFile(response);
       } else {
-        if (status === 200){
-          return data
-        }else if (status === 401) {
+        if (status === 200) {
+          return data;
+        } else if (status === 401) {
           jumpLogin();
         } else {
           message.error("请求失败");
@@ -126,8 +137,13 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
       console.log("error-request:", error.request);
 
       const requestKey = getRequestKey(error.config);
-      urlMap.delete(requestKey)
+      urlMap.delete(requestKey);
 
+      if (axios.isCancel(error)) {
+        message.error("重复请求");
+        return Promise.reject(error);
+      }
+    
       if (error.config.showLoading !== false) hideLoading();
       if (error.response) {
         if (error.response.status === 401) {
@@ -140,5 +156,5 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
   );
   return instance;
 };
- 
-export const request =  httpInstance();
+
+export const request = httpInstance();

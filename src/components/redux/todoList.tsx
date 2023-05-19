@@ -39,6 +39,7 @@ const ReduxTest = () => {
 
   const getDataSource = useCallback(() => {
     getDelayData().then((data) => {
+      console.log("1212",data)
       dispatch({ type: "INIT_DATA", payload: data });
     });
   }, []);
@@ -49,7 +50,7 @@ const ReduxTest = () => {
  
 
   const handlePress = () => {
-    dispatch({ type: "ADD_TODO_LIST", payload: { key: input, text: input } });
+    dispatch({ type: "ADD_TODO_LIST", payload: { key: input, text: input, status:"pending" } });
     setInput("");
   };
 

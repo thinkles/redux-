@@ -1,7 +1,7 @@
 import undoable from 'redux-undo'
 
 type listType={
-  key: string;
+   key: string;
    text: string; 
    status: "done" | "pending" 
 }
@@ -50,16 +50,15 @@ const initialState: TodoType = {
         ...state,
         list: state.list.map((it) => {
           if (it.key === action.payload.key) {
-            it.status = action.payload.status;
+            // it.status = action.payload.status
+            return {
+              ...it, 
+              status:action.payload.status
+            }
           }
           return it;
         }),
       };
-     /*  case "QUERY_TODO_LIST":
-      return {
-        ...state,
-        list: state.list.filter((it) => it.status === action.payload)
-      }; */
     default:
       return state;
   }

@@ -1,1 +1,7 @@
-export const FETCH_TODO_REQUEST = "FETCH_TODO_REQUEST";
+export const toggleTodo = (key:string,status:string) => ({
+    type: "DONE_TODO_LIST",
+      payload: {
+        key,
+        status: status === "pending" ? "done" : "pending",
+      },
+  })

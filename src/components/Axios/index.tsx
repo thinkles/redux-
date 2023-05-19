@@ -2,6 +2,7 @@ import { Button, List } from "antd";
 import { getDelayList, getList } from "../../utils/api";
 
 const AxiosTest = () => {
+  console.log("AxiosTest")
   const handle1 = () => {
     /**
      * * 这里的错误处理结果， 和响应拦截器重叠了，可以作为响应拦截器的补充

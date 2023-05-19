@@ -1,51 +1,68 @@
-import { todoItem } from "../../components/redux/todoList";
+import undoable from 'redux-undo'
 
-const intialState: todoItem[] = [
-  {
-    id: "1",
-    content: "work 1",
-    status: "pending"
-  },
-  {
-    id: "2",
-    content: "work 2",
-    status: "pending"
-  },
-  {
-    id: "3",
-    content: "work 3",
-    status: "pending"
-  },
-  {
-    id: "4",
-    content: "work 4",
-    status: "pending"
-  },
-  {
-    id: "5",
-    content: "work 4",
-    status: "pending"
-  },
-  {
-    id: "6",
-    content: "work 4",
-    status: "pending"
-  }
-];
-
-export default function (state = intialState, action: actionType) {
-  switch (action.type) {
-    case "ADD_TODO":
-      return [action.payload, ...state];
-    case "DELETE_TODO":
-      state.splice(action.payload, 1);
-      return [...state];
-    default:
-      return state;
-  }
+type listType={
+  key: string;
+   text: string; 
+   status: "done" | "pending" 
 }
+interface TodoType {
+  list: listType[];
+  obj: {
+    name: string;
+    age: string;
+  };
+}
+
 
 type actionType = {
   type: string;
   payload: any;
 };
+
+
+const initialState: TodoType = {
+  list: [],
+  obj: {name:"",age:""}
+};
+
+// TODO:补充redux类型 = initialState
+
+ const todo= (state=initialState , action: actionType) =>{
+  switch (action.type) {
+    case "INIT_DATA":
+      return {
+        ...state,
+        list: [...action.payload],
+      };
+    case "ADD_TODO_LIST":
+      return {
+        ...state,
+        list: [action.payload, ...state.list],
+      };
+    case "DELETE_TODO_LIST":
+      state.list.splice(action.payload, 1);
+      return {
+        ...state,
+        list: [...state.list],
+      };
+    case "DONE_TODO_LIST":
+      return {
+        ...state,
+        list: state.list.map((it) => {
+          if (it.key === action.payload.key) {
+            it.status = action.payload.status;
+          }
+          return it;
+        }),
+      };
+     /*  case "QUERY_TODO_LIST":
+      return {
+        ...state,
+        list: state.list.filter((it) => it.status === action.payload)
+      }; */
+    default:
+      return state;
+  }
+}
+
+export default undoable(todo);

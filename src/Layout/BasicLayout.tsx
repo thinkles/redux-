@@ -7,11 +7,11 @@ import {
 } from "@ant-design/icons";
 
 import "./style.css";
-import TodoList from "../components/redux/todoList";
 import HeaderGroup from "./header";
 import { Link, Route, Switch } from "react-router-dom";
 import Container from "../components/Container";
 import AxiosTest from "../components/Axios";
+import ReduxTest from "../components/redux/todoList";
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -63,15 +63,15 @@ const BasicLayout: React.FC = () => {
               </Container>
             </Route>
             <Route path="/redux">
+              <Container title="reactRedux、Redux使用">
+                <ReduxTest />
+              </Container>
+            </Route>
+            {/* <Route path="/saga">
               <Container title="axios 测试">
                 <TodoList />
               </Container>
-            </Route>
-            <Route path="/saga">
-              <Container title="axios 测试">
-                <TodoList />
-              </Container>
-            </Route>
+            </Route> */}
           </Switch>
         </Content>
         <Footer style={footerStyle}>Footer</Footer>

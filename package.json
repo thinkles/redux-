@@ -10,13 +10,14 @@
     "axios": "^1.3.5",
     "json-server": "^0.17.3",
     "loader-utils": "3.2.1",
-    "react": "18.2.0",
+    "react": "^18.2.0",
     "react-dom": "18.2.0",
     "react-redux": "8.0.5",
     "react-router-dom": "^5.0.0",
     "react-scripts": "5.0.1",
     "redux": "4.2.1",
-    "redux-saga": "1.2.2"
+    "redux-saga": "1.2.2",
+    "redux-undo": "^1.0.1"
   },
   "devDependencies": {
     "@types/react": "18.0.25",
@@ -26,14 +27,16 @@
     "eslint": "^8.38.0",
     "eslint-plugin-react": "^7.32.2",
     "mockjs": "^1.1.0",
+    "nodemon": "^2.0.22",
     "typescript": "4.4.2"
   },
   "scripts": {
     "start": "react-scripts start",
+    "update:data": "node src/data/action.js",
+    "json-server": "npm run update:data && json-server --watch src/data/todo.json --routes src/data/routes.json --port=3001",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "json-server": "json-server --watch src/data/todo.js --routes src/data/routes.json --port=3001"
+    "eject": "react-scripts eject"
   },
   "browserslist": [
     ">0.2%",

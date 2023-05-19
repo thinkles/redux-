@@ -88,20 +88,26 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
   instance.interceptors.request.use(
     function (config) {
       // 在发送请求之前做些什么
+      console.groupCollapsed("请求信息")
       console.log("请求config:", config);
-      // config = cancelRequest(config);
-      config = cancelRequestAnother(config);
+      console.groupEnd()
+
+      config = cancelRequest(config);
+      // config = cancelRequestAnother(config);
 
       if (config.showLoading !== false) showLoading();
       return config;
     },
     function (error) {
       const { config } = error;
+      console.groupCollapsed("请求失败")
+
       console.log("请求错误处理config", config);
 
+      console.groupEnd()
       const requestKey = getRequestKey(config);
       urlMap.delete(requestKey);
-
+      
       // 对请求错误做些什么
       return Promise.reject(error);
     }
@@ -109,11 +115,15 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
 
   instance.interceptors.response.use(
     function (response) {
+      console.groupCollapsed("响应信息") 
       console.log("响应response:", response);
+
       if (response.config.showLoading !== false) hideLoading();
       const { data, status, config } = response;
       // config设置responseType为blob 处理文件下载
+
       console.log("响应config:", config);
+      console.groupEnd()
 
       const requestKey = getRequestKey(config);
       urlMap.delete(requestKey);
@@ -133,16 +143,20 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
     },
     function (error) {
       // 响应错误的情况都会走，响应拦截器，例如错误1，状态码大于200，错误2，没有返回响应结果
+      console.groupCollapsed("error 信息") 
       console.log("error:", error);
       console.log("error-config:", error.config);
       console.log("error-request:", error.request);
+      console.groupEnd();
 
       const requestKey = getRequestKey(error.config);
       urlMap.delete(requestKey);
 
       if (axios.isCancel(error)) {
-        message.error("重复请求");
-        return Promise.reject(error);
+        // message.error("重复请求");
+        console.log("请求重复");
+        return Promise.resolve("")
+        // return Promise.reject(error);
       }
     
       if (error.config.showLoading !== false) hideLoading();

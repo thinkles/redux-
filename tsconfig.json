@@ -1,19 +1,11 @@
 {
-    "include": [
-        "./src/**/*",
-    ],
-    "compilerOptions": {
-        "strict": true,
-        "esModuleInterop": true,
-        "typeRoots": [
-            "node_modules/@types",
-            "src/types"
-        ],
-        // "skipDefaultLibCheck": true,
-        "lib": [
-            "dom",
-            "es2015"
-        ],
-        "jsx": "react-jsx"
-    }
+  "include": ["./src/**/*"],
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "typeRoots": ["node_modules/@types", "src/types"],
+    // "skipDefaultLibCheck": true,
+    "lib": ["dom", "es2015"],
+    "jsx": "react-jsx"
+  }
 }

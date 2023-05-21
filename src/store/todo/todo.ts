@@ -1,6 +1,6 @@
 import undoable from 'redux-undo'
 
-type listType={
+export type listType={
    key: string;
    text: string; 
    status: "done" | "pending" 
@@ -51,6 +51,7 @@ const initialState: TodoType = {
         list: state.list.map((it) => {
           if (it.key === action.payload.key) {
             // it.status = action.payload.status
+            // 类似这种直接赋值的操作会出现更改源数据的问题
             return {
               ...it, 
               status:action.payload.status

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../..";
+import { AppDispatch, RootState } from "../..";
 import "./style.css";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -10,11 +10,12 @@ import {
   Radio,
   RadioChangeEvent,
   Row,
+  Space,
 } from "antd";
 import { getDelayData } from "../../utils/api";
-import {toggleTodo} from "../../store/todo/action";
-import { ActionCreators } from 'redux-undo'
-
+import { getAllProducts, toggleTodo } from "../../store/todo/action";
+import { ActionCreators } from "redux-undo";
+import {getCompletedTodoCount} from "../../store/todo/selectors";
 
 const options = [
   { label: "进行中", value: "pending" },
@@ -22,14 +23,13 @@ const options = [
 ];
 
 const ReduxTest = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [input, setInput] = useState("");
   const dataSource = useSelector((state: RootState) => state.todo.present.list);
   const past = useSelector((state: RootState) => state.todo.past);
-  const future =  useSelector((state: RootState) => state.todo.future);
+  const future = useSelector((state: RootState) => state.todo.future);
   const todo = useSelector((state: RootState) => state.todo);
-  console.log("🐺 ~ file: todoList.tsx:31 ~ ReduxTest ~ future:", todo)
-  
+ 
   const [value4, setValue4] = useState("pending");
 
   const todoList = useMemo(
@@ -39,18 +39,31 @@ const ReduxTest = () => {
 
   const getDataSource = useCallback(() => {
     getDelayData().then((data) => {
-      console.log("1212",data)
+      console.log("1212", data);
       dispatch({ type: "INIT_DATA", payload: data });
     });
   }, []);
 
+ /**
+  * 获取购物车例子，模拟数据
+  */
+ const getCarProduct =useCallback(()=>{
+  dispatch(getAllProducts()) 
+ },[]);
+
   useEffect(() => {
     getDataSource();
   }, []);
- 
+
+  useEffect(()=>{
+    getCarProduct();
+  },[])
 
   const handlePress = () => {
-    dispatch({ type: "ADD_TODO_LIST", payload: { key: input, text: input, status:"pending" } });
+    dispatch({
+      type: "ADD_TODO_LIST",
+      payload: { key: input, text: input, status: "pending" },
+    });
     setInput("");
   };
 
@@ -58,11 +71,13 @@ const ReduxTest = () => {
    * * actionCreator 的意义，简化
    */
   const handleDone = (key: string, status: string) => {
-    dispatch(toggleTodo(key,status));
+    dispatch(toggleTodo(key, status));
   };
   const onChange4 = ({ target: { value } }: RadioChangeEvent) => {
     setValue4(value);
   };
+
+
 
   return (
     <>
@@ -102,15 +117,25 @@ const ReduxTest = () => {
             </List.Item>
           )}
         />
-        <Button onClick={()=>dispatch(ActionCreators.undo())} type="primary" disabled={past.length === 0}>
-          undo
-        </Button>
-        <Button onClick={()=>dispatch(ActionCreators.redo())}  disabled={future.length === 0}>
-          redo
-        </Button>
+        <Space>
+          <Button
+            onClick={() => dispatch(ActionCreators.undo())}
+            type="primary"
+            disabled={past.length === 0}
+          >
+            undo
+          </Button>
+          <Button
+            onClick={() => dispatch(ActionCreators.redo())}
+            disabled={future.length === 0}
+          >
+            redo
+          </Button>
+        </Space>
+        <div>完成数量（缓存操作）:{getCompletedTodoCount(dataSource)}</div>
       </Card>
-      <Card title="其他">
-        <div>1231231</div>
+      <Card title="应用升级下的 redux 模式">
+      
       </Card>
     </>
   );

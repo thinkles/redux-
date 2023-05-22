@@ -1,9 +1,8 @@
 import {RootState} from "../..";
-import { ADD_TO_CART, CHECKOUT_FAILURE, CHECKOUT_REQUEST } from "../todo/constants";
+import { ADD_TO_CART, CHECKOUT_FAILURE, CHECKOUT_REQUEST } from "./constants";
 
 interface CartType {
   addedIds: number[];
-
   quantityById: {
     [key: number]: number;
   };

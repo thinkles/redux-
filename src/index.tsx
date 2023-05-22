@@ -42,6 +42,5 @@ root.render(
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch & ThunkDispatch<RootState, unknown, AnyAction>;
-
 export type AppGetState = typeof store.getState
 // export type AppDispatch = Dispatch<AnyAction>;

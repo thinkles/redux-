@@ -13,9 +13,10 @@ import {
   Space,
 } from "antd";
 import { getDelayData } from "../../utils/api";
-import { getAllProducts, toggleTodo } from "../../store/todo/action";
+import { getAllProducts, toggleTodo } from "../../store/action";
 import { ActionCreators } from "redux-undo";
 import {getCompletedTodoCount} from "../../store/todo/selectors";
+import Cart from "./cart";
 
 const options = [
   { label: "进行中", value: "pending" },
@@ -39,25 +40,15 @@ const ReduxTest = () => {
 
   const getDataSource = useCallback(() => {
     getDelayData().then((data) => {
-      console.log("1212", data);
       dispatch({ type: "INIT_DATA", payload: data });
     });
   }, []);
-
- /**
-  * 获取购物车例子，模拟数据
-  */
- const getCarProduct =useCallback(()=>{
-  dispatch(getAllProducts()) 
- },[]);
 
   useEffect(() => {
     getDataSource();
   }, []);
 
-  useEffect(()=>{
-    getCarProduct();
-  },[])
+
 
   const handlePress = () => {
     dispatch({
@@ -135,7 +126,7 @@ const ReduxTest = () => {
         <div>完成数量（缓存操作）:{getCompletedTodoCount(dataSource)}</div>
       </Card>
       <Card title="应用升级下的 redux 模式">
-      
+      <Cart/>
       </Card>
     </>
   );

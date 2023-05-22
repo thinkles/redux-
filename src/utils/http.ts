@@ -149,6 +149,8 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
       console.log("error-request:", error.request);
       console.groupEnd();
 
+      if (error.config.showLoading !== false) hideLoading();
+
       const requestKey = getRequestKey(error.config);
       urlMap.delete(requestKey);
 
@@ -159,7 +161,6 @@ export const httpInstance = (config?: CustomAxiosRequestConfig) => {
         // return Promise.reject(error);
       }
     
-      if (error.config.showLoading !== false) hideLoading();
       if (error.response) {
         if (error.response.status === 401) {
           jumpLogin();

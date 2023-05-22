@@ -1,9 +1,7 @@
 import { combineReducers } from "redux";
-import { ADD_TO_CART, RECEIVE_PRODUCTS } from "../todo/constants";
 import {RootState} from "../..";
-import {ProductsType} from "../todo/action";
-
-
+import {ProductsType} from "../action";
+import {ADD_TO_CART, RECEIVE_PRODUCTS} from "./constants";
 
 interface ProductsAction {
   type: typeof ADD_TO_CART | typeof RECEIVE_PRODUCTS;
@@ -11,6 +9,10 @@ interface ProductsAction {
   productId: number;
 }
 
+interface ByidState {
+
+  [key:number]: ProductsType;
+ }
 export const products = (state: ProductsType, action: ProductsAction) => {
   switch (action.type) {
     case ADD_TO_CART:
@@ -22,11 +24,6 @@ export const products = (state: ProductsType, action: ProductsAction) => {
       return state;
   }
 };
-
-interface ByidState {
-
- [key:number]: ProductsType;
-}
 
 const byId = (state: ByidState = {}, action: ProductsAction) => {
   switch (action.type) {

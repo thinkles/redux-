@@ -12,14 +12,29 @@ import {
 } from "antd";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux-hook";
 import { nanoid } from "@reduxjs/toolkit";
-import { postAdded } from "../../store/tool";
+import { postAdded, postUpdated } from "../../store/tool";
 
 const ReduxTest = () => {
   const dispatch = useAppDispatch();
-  const posts = useAppSelector((state) => state.tool);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [postId, setPostId] = useState("");
+
+  const posts = useAppSelector((state) => state.tool);
+  const post = useAppSelector((state) =>
+    state.tool.find((post) => post.id === postId)
+  );
+
+  useEffect(() => {
+    console.log("1212", post);
+
+    if (post !== undefined) {
+      setTitle(post?.title ?? "");
+      setContent(post?.content ?? "");
+    }
+  }, [postId]);
+
   const onTitleChanged = (e: ChangeEvent<HTMLInputElement>) =>
     setTitle(e.target.value);
   const onContentChanged = (e: ChangeEvent<HTMLTextAreaElement>) =>
@@ -28,11 +43,10 @@ const ReduxTest = () => {
   const onSavePostClicked = () => {
     if (title && content) {
       dispatch(
-        postAdded({
-          id: nanoid(),
+        postAdded(
           title,
           content,
-        })
+        )
       );
 
       setTitle("");
@@ -40,6 +54,12 @@ const ReduxTest = () => {
     }
   };
 
+  const onPostClicked = (id: string) => {
+    setPostId(id);
+  };
+  const onEditPostClicked = () => {
+    dispatch(postUpdated({ id: postId, title, content }));
+  };
   return (
     <>
       <Card title={"redux-toolkit 使用"}>
@@ -62,16 +82,27 @@ const ReduxTest = () => {
                 value={content}
                 onChange={onContentChanged}
               />
-              <button type="button" onClick={onSavePostClicked}>
-                保存文章
-              </button>
+              <Space>
+                <button type="button" onClick={onSavePostClicked}>
+                  保存文章
+                </button>
+                <button type="button" onClick={onEditPostClicked}>
+                  编辑文章
+                </button>
+              </Space>
             </form>
           </div>
           <div className="flex-item">
             <h2>发布页</h2>
             {posts.map((post) => (
-              <article className="post-excerpt" key={post.id}>
+              <article className="post-excerpt" key={post.id} style={{position:"relative"}}>
+                <div style={{ position: "absolute",right:10 }}>
+                  <Button type="link" onClick={() => onPostClicked(post.id)}>
+                    编辑文章
+                  </Button>
+                </div>
                 <h3>{post.title}</h3>
+                <p>{post.date}</p>
                 <p className="post-content">{post.content.substring(0, 100)}</p>
               </article>
             ))}

@@ -44,12 +44,9 @@ textarea {
   line-height: 1;
 }
 
-.button,
-a.button,
 button,
 [type="submit"],
-[type="reset"],
-[type="button"] {
+[type="reset"] {
   -webkit-appearance: none;
   display: inline-block;
   border: 1px solid #0366ee;

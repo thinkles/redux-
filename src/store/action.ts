@@ -1,6 +1,7 @@
 import {AppDispatch, AppGetState, RootState} from '..'
 import * as types from './cart/constants'
 
+// ? redux基本使用
 export const toggleTodo = (key:string, status:string) => ({
     type: "DONE_TODO_LIST",
       payload: {
@@ -10,7 +11,7 @@ export const toggleTodo = (key:string, status:string) => ({
   })
 
  
-// 购物车
+// ? 购物车例子
 
 export interface ProductsType{
   id:number;

@@ -15,7 +15,7 @@ import {
 import { getDelayData } from "../../utils/api";
 import { getAllProducts, toggleTodo } from "../../store/action";
 import { ActionCreators } from "redux-undo";
-import {getCompletedTodoCount} from "../../store/todo/selectors";
+import { getCompletedTodoCount } from "../../store/todo/selectors";
 import Cart from "./cart";
 
 const options = [
@@ -30,7 +30,7 @@ const ReduxTest = () => {
   const past = useSelector((state: RootState) => state.todo.past);
   const future = useSelector((state: RootState) => state.todo.future);
   const todo = useSelector((state: RootState) => state.todo);
- 
+
   const [value4, setValue4] = useState("pending");
 
   const todoList = useMemo(
@@ -47,8 +47,6 @@ const ReduxTest = () => {
   useEffect(() => {
     getDataSource();
   }, []);
-
-
 
   const handlePress = () => {
     dispatch({
@@ -67,8 +65,6 @@ const ReduxTest = () => {
   const onChange4 = ({ target: { value } }: RadioChangeEvent) => {
     setValue4(value);
   };
-
-
 
   return (
     <>
@@ -126,7 +122,7 @@ const ReduxTest = () => {
         <div>完成数量（缓存操作）:{getCompletedTodoCount(dataSource)}</div>
       </Card>
       <Card title="应用升级下的 redux 模式">
-      <Cart/>
+        <Cart />
       </Card>
     </>
   );

@@ -1,12 +1,8 @@
-import { combineReducers } from "redux";
-import todo from "./todo/todo";
-import cart from "./cart/cart";
-import product from "./cart/product";
+import tool from "./tool";
 
-const rootReducer = combineReducers({
-  todo,
-  cart,
-  product,
-});
+
+const rootReducer = {
+ tool,
+}
 
 export default rootReducer;

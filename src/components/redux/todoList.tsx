@@ -1,7 +1,5 @@
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../..";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import "./style.css";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Button,
   Card,
@@ -12,117 +10,77 @@ import {
   Row,
   Space,
 } from "antd";
-import { getDelayData } from "../../utils/api";
-import { getAllProducts, toggleTodo } from "../../store/action";
-import { ActionCreators } from "redux-undo";
-import { getCompletedTodoCount } from "../../store/todo/selectors";
-import Cart from "./cart";
-
-const options = [
-  { label: "进行中", value: "pending" },
-  { label: "已完成", value: "done" },
-];
+import { useAppDispatch, useAppSelector } from "../../hooks/redux-hook";
+import { nanoid } from "@reduxjs/toolkit";
+import { postAdded } from "../../store/tool";
 
 const ReduxTest = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const [input, setInput] = useState("");
-  const dataSource = useSelector((state: RootState) => state.todo.present.list);
-  const past = useSelector((state: RootState) => state.todo.past);
-  const future = useSelector((state: RootState) => state.todo.future);
-  const todo = useSelector((state: RootState) => state.todo);
+  const dispatch = useAppDispatch();
+  const posts = useAppSelector((state) => state.tool);
 
-  const [value4, setValue4] = useState("pending");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const onTitleChanged = (e: ChangeEvent<HTMLInputElement>) =>
+    setTitle(e.target.value);
+  const onContentChanged = (e: ChangeEvent<HTMLTextAreaElement>) =>
+    setContent(e.target.value);
 
-  const todoList = useMemo(
-    () => dataSource.filter((it) => it.status === value4),
-    [dataSource, value4]
-  );
+  const onSavePostClicked = () => {
+    if (title && content) {
+      dispatch(
+        postAdded({
+          id: nanoid(),
+          title,
+          content,
+        })
+      );
 
-  const getDataSource = useCallback(() => {
-    getDelayData().then((data) => {
-      dispatch({ type: "INIT_DATA", payload: data });
-    });
-  }, []);
-
-  useEffect(() => {
-    getDataSource();
-  }, []);
-
-  const handlePress = () => {
-    dispatch({
-      type: "ADD_TODO_LIST",
-      payload: { key: input, text: input, status: "pending" },
-    });
-    setInput("");
-  };
-
-  /**
-   * * actionCreator 的意义，简化
-   */
-  const handleDone = (key: string, status: string) => {
-    dispatch(toggleTodo(key, status));
-  };
-  const onChange4 = ({ target: { value } }: RadioChangeEvent) => {
-    setValue4(value);
+      setTitle("");
+      setContent("");
+    }
   };
 
   return (
     <>
-      <Card title="基本使用" style={{ marginBottom: 25 }}>
-        <Row justify={"space-between"}>
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onPressEnter={handlePress}
-            style={{ width: "80%" }}
-          />
-          <Radio.Group
-            options={options}
-            onChange={onChange4}
-            value={value4}
-            optionType="button"
-            buttonStyle="solid"
-          />
-        </Row>
-
-        <List
-          itemLayout="horizontal"
-          dataSource={todoList}
-          renderItem={(item, index) => (
-            <List.Item
-              actions={[
-                <Button
-                  type="link"
-                  key="delete"
-                  onClick={() => handleDone(item.key, item.status)}
-                >
-                  {item.status === "pending" ? "done" : "todo"}
-                </Button>,
-              ]}
-            >
-              <List.Item.Meta title={item.text} />
-            </List.Item>
-          )}
-        />
-        <Space>
-          <Button
-            onClick={() => dispatch(ActionCreators.undo())}
-            type="primary"
-            disabled={past.length === 0}
-          >
-            undo
-          </Button>
-          <Button
-            onClick={() => dispatch(ActionCreators.redo())}
-            disabled={future.length === 0}
-          >
-            redo
-          </Button>
-        </Space>
-        <div>完成数量（缓存操作）:{getCompletedTodoCount(dataSource)}</div>
-      </Card>
-      <Card title="应用升级下的 redux 模式">
-        <Cart />
+      <Card title={"redux-toolkit 使用"}>
+        <main style={{ display: "flex", height: "80vh" }}>
+          <div className="flex-item">
+            <h2>新增页</h2>
+            <form>
+              <label htmlFor="postTitle">文章标题:</label>
+              <input
+                type="text"
+                id="postTitle"
+                name="postTitle"
+                value={title}
+                onChange={onTitleChanged}
+              />
+              <label htmlFor="postContent">内容：</label>
+              <textarea
+                id="postContent"
+                name="postContent"
+                value={content}
+                onChange={onContentChanged}
+              />
+              <button type="button" onClick={onSavePostClicked}>
+                保存文章
+              </button>
+            </form>
+          </div>
+          <div className="flex-item">
+            <h2>发布页</h2>
+            {posts.map((post) => (
+              <article className="post-excerpt" key={post.id}>
+                <h3>{post.title}</h3>
+                <p className="post-content">{post.content.substring(0, 100)}</p>
+              </article>
+            ))}
+          </div>
+          <div className="flex-item">
+            {" "}
+            <h2>详情页</h2>
+          </div>
+        </main>
       </Card>
     </>
   );

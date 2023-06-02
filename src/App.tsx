@@ -1,16 +1,21 @@
 import "./styles.css";
 
-import BasicLayout from "./Layout/BasicLayout";
-import { BrowserRouter as Router, Switch } from "react-router-dom";
+import {
+  Route,
+  RouteComponentProps,
+  RouteProps,
+  BrowserRouter as Router,
+  Switch,
+} from "react-router-dom";
+import { renderRoutes } from "./utils/utils";
 import routes from "./routes";
-import {renderRoutes} from "./utils/utils";
- 
+
+
+
 export default function App() {
- 
-  
-  return (
+   return (
     <Router>
-     {renderRoutes(routes)}
+      {renderRoutes(routes)}
     </Router>
   );
 }

@@ -1,13 +1,15 @@
 import { Avatar, Dropdown, Input, MenuProps } from "antd";
 import { SearchOutlined, UserOutlined } from "@ant-design/icons";
+import React from "react";
 
-const HeaderGroup = () => {
+ const HeaderGroup = () => {
   const items: MenuProps["items"] = [
     {
       key: "1",
       label: <span>登录</span>
     }
   ];
+
   return (
     <>
       <h1 className="logoHeader">

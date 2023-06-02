@@ -32,11 +32,7 @@ const menuItem = [
     icon: <VideoCameraOutlined />,
     label: <Link to="/redux">Redux</Link>,
   },
-  {
-    key: "3",
-    icon: <UploadOutlined />,
-    label: <Link to="/saga">Saga</Link>,
-  },
+ 
 ];
 
 const BasicLayout: React.FC = () => {

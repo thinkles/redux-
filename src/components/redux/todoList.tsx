@@ -13,17 +13,13 @@ import {
 import { useAppDispatch, useAppSelector } from "../../hooks/redux-hook";
 import { nanoid } from "@reduxjs/toolkit";
 import { postAdded, postUpdated } from "../../store/tool";
+import React from "react";
 
 
-const Cl =(props:{attr:string[]})=>{
-  const {attr} =props;
-  const [state,setState] =useState<string[]>([])
-
-  useEffect(()=>{
-     setState(attr);
-  },[attr])
-  return <div>{state.map(it=>(<div key={it}>{it}</div>))}</div>
-}
+const Cl = (props:any)=>{
+  const {content} =props;
+  return <div>{content}</div>
+} 
 
 
 const ReduxTest = () => {
@@ -121,7 +117,7 @@ const ReduxTest = () => {
           <div className="flex-item">
             {" "}
             <h2>详情页</h2>
-            <Cl attr={testa} />
+            <Cl attr={testa} content={content}/>
           </div>
         </main>
       </Card>
@@ -129,4 +125,5 @@ const ReduxTest = () => {
   );
 };
 
+ReduxTest.whyDidYouRender = true
 export default ReduxTest;

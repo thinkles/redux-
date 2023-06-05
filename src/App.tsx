@@ -12,10 +12,13 @@ import routes from "./routes";
 
 
 
-export default function App() {
+ function App() {
    return (
     <Router>
       {renderRoutes(routes)}
     </Router>
   );
 }
+App.whyDidYouRender = true
+
+export default App;

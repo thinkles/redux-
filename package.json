@@ -39,12 +39,11 @@
     "typescript": "4.4.2"
   },
   "scripts": {
-    "start": "craco start",
+    "start": "react-scripts start",
     "update:data": "node src/data/action.js",
     "json-server": "npm run update:data && json-server --watch src/data/todo.json --routes src/data/routes.json --port=3001",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject"
+    "build": "react-scripts build",
+    "test": "react-scripts test"
   },
   "browserslist": [
     ">0.2%",

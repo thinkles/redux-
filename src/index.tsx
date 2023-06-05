@@ -1,7 +1,4 @@
 import './wdyr.js';
-import 'react-hot-loader';
-import {hot} from 'react-hot-loader/root';
-
 import { Profiler, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { AnyAction } from "redux";
@@ -23,15 +20,13 @@ const store = configureStore({
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement!);
 const onRender =()=>console.log("Profiler 渲染函数")
-const HotApp = hot(App);
-
-root.render(
+ root.render(
   <Provider store={store}>
-    <StrictMode>
-      <Profiler id="Sidebar" onRender={onRender}>
-        <HotApp />
-      </Profiler>
-    </StrictMode>
+    {/* <StrictMode> */}
+      {/* <Profiler id="Sidebar" onRender={onRender}> */}
+        <App />
+      {/* </Profiler> */}
+    {/* </StrictMode> */}
   </Provider>
 );
 

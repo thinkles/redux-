@@ -8,10 +8,10 @@ import { Provider } from "react-redux";
 import {ThunkDispatch} from "redux-thunk";
 import App from "./App";
 import {configureStore} from "@reduxjs/toolkit";
-
+import {middle as customMiddle } from './middle';
 const  store= configureStore({
   reducer: rootReducer,
-  middleware:(getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+  middleware:(getDefaultMiddleware) => getDefaultMiddleware().concat([logger,customMiddle]),
   devTools: process.env.NODE_ENV !== 'production',
 })
 

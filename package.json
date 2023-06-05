@@ -5,6 +5,7 @@
   "keywords": [],
   "main": "src/index.tsx",
   "dependencies": {
+    "@craco/craco": "^7.1.0",
     "@redux-devtools/extension": "3.2.5",
     "@reduxjs/toolkit": "^1.9.5",
     "antd": "5.3.1",
@@ -13,6 +14,7 @@
     "loader-utils": "3.2.1",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
+    "react-hot-loader": "^4.13.1",
     "react-redux": "8.0.5",
     "react-router-dom": "^5.0.0",
     "react-scripts": "5.0.1",
@@ -29,6 +31,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/redux-logger": "^3.0.9",
     "@typescript-eslint/parser": "^5.57.1",
+    "@welldone-software/why-did-you-render": "^7.0.1",
     "eslint": "^8.38.0",
     "eslint-plugin-react": "^7.32.2",
     "mockjs": "^1.1.0",
@@ -36,11 +39,11 @@
     "typescript": "4.4.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "craco start",
     "update:data": "node src/data/action.js",
     "json-server": "npm run update:data && json-server --watch src/data/todo.json --routes src/data/routes.json --port=3001",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "browserslist": [

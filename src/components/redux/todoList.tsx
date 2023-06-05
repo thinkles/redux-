@@ -14,6 +14,18 @@ import { useAppDispatch, useAppSelector } from "../../hooks/redux-hook";
 import { nanoid } from "@reduxjs/toolkit";
 import { postAdded, postUpdated } from "../../store/tool";
 
+
+const Cl =(props:{attr:string[]})=>{
+  const {attr} =props;
+  const [state,setState] =useState<string[]>([])
+
+  useEffect(()=>{
+     setState(attr);
+  },[attr])
+  return <div>{state.map(it=>(<div key={it}>{it}</div>))}</div>
+}
+
+
 const ReduxTest = () => {
   const dispatch = useAppDispatch();
 
@@ -25,10 +37,9 @@ const ReduxTest = () => {
   const post = useAppSelector((state) =>
     state.tool.find((post) => post.id === postId)
   );
-
+  const testa = ["mike","john","wikker","fud"]
   useEffect(() => {
-    console.log("1212", post);
-
+ 
     if (post !== undefined) {
       setTitle(post?.title ?? "");
       setContent(post?.content ?? "");
@@ -110,6 +121,7 @@ const ReduxTest = () => {
           <div className="flex-item">
             {" "}
             <h2>详情页</h2>
+            <Cl attr={testa} />
           </div>
         </main>
       </Card>
